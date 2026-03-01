@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import db, { initDB } from './server/db.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
 function calculateIsOpen(shop: any) {
