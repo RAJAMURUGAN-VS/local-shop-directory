@@ -91,7 +91,7 @@ export default function OwnerGallery() {
 
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Create New Folder</h2>
-        <form onSubmit={handleAddFolder} className="flex gap-4">
+        <form onSubmit={handleAddFolder} className="flex flex-col sm:flex-row gap-4">
           <input
             type="text"
             value={newFolderName}
@@ -101,7 +101,7 @@ export default function OwnerGallery() {
           />
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 flex items-center"
+            className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 flex items-center justify-center sm:justify-start"
           >
             <FolderPlus className="w-5 h-5 mr-2" /> Add Folder
           </button>

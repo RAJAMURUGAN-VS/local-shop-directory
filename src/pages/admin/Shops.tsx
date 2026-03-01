@@ -59,7 +59,7 @@ export default function AdminShops() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Manage Shops</h1>
         <button
           onClick={() => setIsModalOpen(true)}

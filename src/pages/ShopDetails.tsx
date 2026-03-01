@@ -35,13 +35,13 @@ export default function ShopDetails() {
             referrerPolicy="no-referrer"
           />
         </div>
-        <div className="p-8">
-          <div className="flex justify-between items-start">
+        <div className="p-4 sm:p-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{shop.name}</h1>
-              <p className="text-lg text-indigo-600 font-medium mb-4">{shop.category}</p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">{shop.name}</h1>
+              <p className="text-base sm:text-lg text-indigo-600 font-medium">{shop.category}</p>
             </div>
-            <div className="bg-green-100 text-green-800 text-sm font-bold px-3 py-1 rounded-full">
+            <div className="bg-green-100 text-green-800 text-sm font-bold px-3 py-1 rounded-full self-start sm:self-auto">
               Open Now
             </div>
           </div>
@@ -77,14 +77,14 @@ export default function ShopDetails() {
       </div>
 
       {/* Description */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-xl font-bold text-gray-900 mb-4">About the Shop</h2>
         <p className="text-gray-600 leading-relaxed">{shop.description}</p>
       </div>
 
       {/* Gallery */}
       {shop.galleries && shop.galleries.length > 0 && (
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
             <ImageIcon className="w-6 h-6 mr-2" /> Gallery
           </h2>
@@ -112,7 +112,7 @@ export default function ShopDetails() {
 
       {/* Product Table */}
       {!!shop.enable_product_table && shop.product_columns && shop.product_columns.length > 0 && (
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
             <List className="w-6 h-6 mr-2" /> Catalog / Price List
           </h2>

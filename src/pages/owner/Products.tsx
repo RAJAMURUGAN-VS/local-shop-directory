@@ -89,7 +89,7 @@ export default function OwnerProducts() {
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Product Catalog</h1>
         <button
           onClick={() => setIsConfigMode(!isConfigMode)}
@@ -104,7 +104,7 @@ export default function OwnerProducts() {
           <h2 className="text-lg font-bold text-gray-900 mb-4">Configure Table Columns</h2>
           <p className="text-sm text-gray-500 mb-6">Define the columns for your product table (e.g., Item Name, Price, Size, Color).</p>
           
-          <div className="flex gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <input
               type="text"
               value={newColumnName}
@@ -114,7 +114,7 @@ export default function OwnerProducts() {
             />
             <button
               onClick={handleAddColumn}
-              className="bg-gray-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-900 flex items-center"
+              className="bg-gray-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-900 flex items-center justify-center sm:justify-start"
             >
               <Plus className="w-5 h-5 mr-2" /> Add
             </button>
@@ -159,7 +159,7 @@ export default function OwnerProducts() {
               ))}
               <button
                 type="submit"
-                className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 flex items-center h-[38px]"
+                className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 flex items-center justify-center w-full sm:w-auto h-[38px]"
               >
                 <Plus className="w-4 h-4 mr-2" /> Add
               </button>

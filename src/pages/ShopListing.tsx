@@ -114,7 +114,7 @@ export default function ShopListing() {
 
       {/* Main Content */}
       <main className="flex-1">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex items-center justify-between">
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-gray-900">{category}</h2>
             <p className="text-sm text-gray-500 flex items-center mt-1">
@@ -122,14 +122,14 @@ export default function ShopListing() {
             </p>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 w-full sm:w-auto">
             <button 
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="md:hidden p-2 text-gray-500 hover:text-gray-900 bg-gray-100 rounded-lg"
+              className="md:hidden p-2 text-gray-500 hover:text-gray-900 bg-gray-100 rounded-lg flex-shrink-0"
             >
               <Filter className="w-5 h-5" />
             </button>
-            <form onSubmit={handleSearch} className="relative">
+            <form onSubmit={handleSearch} className="relative flex-1 sm:flex-none">
               <input
                 type="text"
                 placeholder="Search shops..."

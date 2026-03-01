@@ -61,7 +61,7 @@ export default function OwnerProfile() {
     <div className="max-w-3xl mx-auto space-y-8">
       <h1 className="text-2xl font-bold text-gray-900">Shop Profile</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Shop Name</label>
@@ -187,7 +187,7 @@ export default function OwnerProfile() {
                   </div>
                   <div className="flex-1 space-y-3">
                     {schedule[day]?.map((interval, index) => (
-                      <div key={index} className="flex items-center gap-3">
+                      <div key={index} className="flex flex-wrap items-center gap-3">
                         <input
                           type="time"
                           value={interval.start}
