@@ -121,8 +121,8 @@ export default function OwnerProfile() {
           <input
             type="checkbox"
             id="enable_product_table"
-            checked={shop.enable_product_table === 1}
-            onChange={(e) => setShop({ ...shop, enable_product_table: e.target.checked ? 1 : 0 })}
+            checked={!!shop.enable_product_table}
+            onChange={(e) => setShop({ ...shop, enable_product_table: e.target.checked })}
             className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
           />
           <label htmlFor="enable_product_table" className="text-sm font-medium text-gray-700">
@@ -156,8 +156,8 @@ export default function OwnerProfile() {
             <input
               type="checkbox"
               id="auto_availability"
-              checked={shop.auto_availability === 1}
-              onChange={(e) => setShop({ ...shop, auto_availability: e.target.checked ? 1 : 0 })}
+              checked={!!shop.auto_availability}
+              onChange={(e) => setShop({ ...shop, auto_availability: e.target.checked })}
               className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
             />
             <label htmlFor="auto_availability" className="text-sm font-medium text-gray-700">
@@ -170,8 +170,8 @@ export default function OwnerProfile() {
               <input
                 type="checkbox"
                 id="is_open"
-                checked={shop.is_open === 1}
-                onChange={(e) => setShop({ ...shop, is_open: e.target.checked ? 1 : 0 })}
+                checked={!!shop.is_open}
+                onChange={(e) => setShop({ ...shop, is_open: e.target.checked })}
                 className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
               />
               <label htmlFor="is_open" className="text-sm font-medium text-gray-700">

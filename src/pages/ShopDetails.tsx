@@ -111,7 +111,7 @@ export default function ShopDetails() {
       )}
 
       {/* Product Table */}
-      {shop.enable_product_table === 1 && shop.product_columns && shop.product_columns.length > 0 && (
+      {!!shop.enable_product_table && shop.product_columns && shop.product_columns.length > 0 && (
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
             <List className="w-6 h-6 mr-2" /> Catalog / Price List

@@ -34,7 +34,7 @@ export default function ShopListing() {
   useEffect(() => {
     let result = shops;
     if (isOpenNowFilter) {
-      result = result.filter(shop => shop.is_open === 1);
+      result = result.filter(shop => !!shop.is_open);
     }
     if (selectedFilters.length > 0) {
       result = result.filter(shop => {
@@ -158,7 +158,7 @@ export default function ShopListing() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     referrerPolicy="no-referrer"
                   />
-                  {shop.enable_product_table === 1 && (
+                  {!!shop.enable_product_table && (
                     <div className="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">
                       Catalog Available
                     </div>
@@ -167,7 +167,7 @@ export default function ShopListing() {
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-gray-900 mb-1 flex items-center justify-between">
                     {shop.name}
-                    {shop.is_open === 1 ? (
+                    {!!shop.is_open ? (
                       <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">OPEN</span>
                     ) : (
                       <span className="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">CLOSED</span>

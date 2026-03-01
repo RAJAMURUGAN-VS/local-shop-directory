@@ -14,7 +14,7 @@ export default function OwnerProducts() {
 
   useEffect(() => {
     fetchProducts();
-    api.get('/owner/shop').then(shop => setShopEnabled(shop.enable_product_table === 1)).catch(console.error);
+    api.get('/owner/shop').then(shop => setShopEnabled(!!shop.enable_product_table)).catch(console.error);
   }, []);
 
   const fetchProducts = () => {
