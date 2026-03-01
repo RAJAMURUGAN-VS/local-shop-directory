@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: local-shop-backend
+    env: node
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /data/database.sqlite
+      - key: JWT_SECRET
+        generateValue: true
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1

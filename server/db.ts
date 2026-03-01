@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.resolve(__dirname, 'database.sqlite');
+const dbPath = process.env.DB_PATH || path.resolve(__dirname, 'database.sqlite');
 const db = new Database(dbPath);
 
 db.pragma('journal_mode = WAL');
