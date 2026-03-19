@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import db, { initDB } from './server/db.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
 function calculateIsOpen(shop: any) {
@@ -164,6 +164,34 @@ app.put('/api/admin/areas/:id', authenticate, requireAdmin, async (req, res) => 
   res.json({ success: true });
 });
 
+app.delete('/api/admin/areas/:id', authenticate, requireAdmin, async (req, res) => {
+  const areaId = Number(req.params.id);
+  
+  // Find all shops in this area
+  const shopsRes = await db.query('SELECT id FROM shops WHERE area_id = $1', [areaId]);
+  const shopIds = shopsRes.rows.map(r => r.id);
+  
+  // Delete all related data for each shop
+  for (const shopId of shopIds) {
+    await db.query('DELETE FROM users WHERE shop_id = $1', [shopId]);
+    await db.query('DELETE FROM product_table_configs WHERE shop_id = $1', [shopId]);
+    await db.query('DELETE FROM product_rows WHERE shop_id = $1', [shopId]);
+    await db.query('DELETE FROM gallery_images WHERE gallery_id IN (SELECT id FROM galleries WHERE shop_id = $1)', [shopId]);
+    await db.query('DELETE FROM galleries WHERE shop_id = $1', [shopId]);
+  }
+  
+  // Delete shops
+  await db.query('DELETE FROM shops WHERE area_id = $1', [areaId]);
+  
+  // Delete categories
+  await db.query('DELETE FROM categories WHERE area_id = $1', [areaId]);
+  
+  // Delete area
+  await db.query('DELETE FROM areas WHERE id = $1', [areaId]);
+  
+  res.json({ success: true });
+});
+
 app.post('/api/admin/areas/:id/categories', authenticate, requireAdmin, async (req, res) => {
   const { name, icon, filters } = req.body;
   const filtersJson = JSON.stringify(filters || []);
@@ -215,6 +243,19 @@ app.post('/api/admin/shops', authenticate, requireAdmin, async (req, res) => {
 app.put('/api/admin/shops/:id', authenticate, requireAdmin, async (req, res) => {
   const { status } = req.body;
   await db.query('UPDATE shops SET status = $1 WHERE id = $2', [status, req.params.id]);
+  res.json({ success: true });
+});
+
+app.delete('/api/admin/shops/:id', authenticate, requireAdmin, async (req, res) => {
+  const shopId = Number(req.params.id);
+  
+  await db.query('DELETE FROM users WHERE shop_id = $1', [shopId]);
+  await db.query('DELETE FROM product_table_configs WHERE shop_id = $1', [shopId]);
+  await db.query('DELETE FROM product_rows WHERE shop_id = $1', [shopId]);
+  await db.query('DELETE FROM gallery_images WHERE gallery_id IN (SELECT id FROM galleries WHERE shop_id = $1)', [shopId]);
+  await db.query('DELETE FROM galleries WHERE shop_id = $1', [shopId]);
+  await db.query('DELETE FROM shops WHERE id = $1', [shopId]);
+  
   res.json({ success: true });
 });
 

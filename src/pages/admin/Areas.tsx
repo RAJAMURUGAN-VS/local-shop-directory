@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../../services/api';
 import { Link } from 'react-router-dom';
-import { Plus, Edit2, Check, X, List } from 'lucide-react';
+import { Plus, Edit2, Check, X, List, Trash2 } from 'lucide-react';
+import ConfirmModal from '../../components/ConfirmModal';
 
 export default function AdminAreas() {
   const [areas, setAreas] = useState<any[]>([]);
   const [newArea, setNewArea] = useState('');
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: number | null }>({ isOpen: false, id: null });
 
   useEffect(() => {
     fetchAreas();
@@ -34,6 +36,18 @@ export default function AdminAreas() {
       fetchAreas();
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteModal.id) return;
+    try {
+      await api.delete(`/admin/areas/${deleteModal.id}`);
+      fetchAreas();
+      setDeleteModal({ isOpen: false, id: null });
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete area');
     }
   };
 
@@ -95,6 +109,12 @@ export default function AdminAreas() {
                     >
                       {area.status === 'active' ? 'Deactivate' : 'Activate'}
                     </button>
+                    <button
+                      onClick={() => setDeleteModal({ isOpen: true, id: area.id })}
+                      className="text-red-600 hover:text-red-900 inline-flex items-center"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" /> Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -102,6 +122,14 @@ export default function AdminAreas() {
           </table>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Area"
+        message="Are you sure you want to delete this area? This will also delete all shops and categories in this area. This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteModal({ isOpen: false, id: null })}
+      />
     </div>
   );
 }

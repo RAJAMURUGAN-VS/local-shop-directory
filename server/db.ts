@@ -1,25 +1,19 @@
-import { Pool } from 'pg';
+import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
 
-// Use a local fallback for development if DATABASE_URL is not set
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/localshop';
-
-const pool = new Pool({
-  connectionString,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const sqlite = new Database('localshop.db');
 
 export const initDB = async () => {
   try {
-    await pool.query(`
+    sqlite.exec(`
       CREATE TABLE IF NOT EXISTS areas (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE,
         status TEXT DEFAULT 'active'
       );
 
       CREATE TABLE IF NOT EXISTS shops (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         description TEXT,
         category TEXT,
@@ -27,16 +21,16 @@ export const initDB = async () => {
         address TEXT,
         contact_number TEXT,
         google_map_link TEXT,
-        enable_product_table BOOLEAN DEFAULT false,
+        enable_product_table BOOLEAN DEFAULT 0,
         status TEXT DEFAULT 'active',
         active_filters TEXT DEFAULT '[]',
-        is_open BOOLEAN DEFAULT true,
-        auto_availability BOOLEAN DEFAULT false,
+        is_open BOOLEAN DEFAULT 1,
+        auto_availability BOOLEAN DEFAULT 0,
         schedule TEXT DEFAULT '{}'
       );
 
       CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         role TEXT NOT NULL,
         shop_id INTEGER REFERENCES shops(id),
         email TEXT NOT NULL UNIQUE,
@@ -44,31 +38,31 @@ export const initDB = async () => {
       );
 
       CREATE TABLE IF NOT EXISTS product_table_configs (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         shop_id INTEGER UNIQUE REFERENCES shops(id),
         columns TEXT
       );
 
       CREATE TABLE IF NOT EXISTS product_rows (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         shop_id INTEGER REFERENCES shops(id),
         data TEXT
       );
 
       CREATE TABLE IF NOT EXISTS galleries (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         shop_id INTEGER REFERENCES shops(id),
         folder_name TEXT NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS gallery_images (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         gallery_id INTEGER REFERENCES galleries(id),
         image_url TEXT NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS categories (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         area_id INTEGER REFERENCES areas(id),
         name TEXT NOT NULL,
         icon TEXT DEFAULT 'Store',
@@ -99,7 +93,7 @@ export const initDB = async () => {
         '123 Main St, Downtown',
         '555-0100',
         'https://maps.google.com/?q=123+Main+St',
-        true
+        1
       ]);
       const shopId = shopInsert.rows[0].id;
 
@@ -133,6 +127,33 @@ export const initDB = async () => {
     console.log("Database initialized successfully");
   } catch (err) {
     console.error("Failed to initialize database", err);
+  }
+};
+
+const pool = {
+  query: async (text: string, params: any[] = []) => {
+    const sqliteQuery = text.replace(/\$\d+/g, '?');
+    const sqliteParams = params.map(p => typeof p === 'boolean' ? (p ? 1 : 0) : p);
+
+    const stmt = sqlite.prepare(sqliteQuery);
+    
+    if (sqliteQuery.trim().toUpperCase().startsWith('SELECT') || sqliteQuery.trim().toUpperCase().includes('RETURNING')) {
+      let rows = stmt.all(...sqliteParams);
+      
+      // Convert 1/0 to true/false for known boolean columns
+      rows = rows.map((row: any) => {
+        const newRow = { ...row };
+        if ('enable_product_table' in newRow) newRow.enable_product_table = Boolean(newRow.enable_product_table);
+        if ('is_open' in newRow) newRow.is_open = Boolean(newRow.is_open);
+        if ('auto_availability' in newRow) newRow.auto_availability = Boolean(newRow.auto_availability);
+        return newRow;
+      });
+
+      return { rows };
+    } else {
+      const info = stmt.run(...sqliteParams);
+      return { rows: [], rowCount: info.changes };
+    }
   }
 };
 

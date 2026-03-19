@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../../services/api';
-import { Plus, Edit2, Store } from 'lucide-react';
+import { Plus, Edit2, Store, Trash2 } from 'lucide-react';
+import ConfirmModal from '../../components/ConfirmModal';
 
 export default function AdminShops() {
   const [shops, setShops] = useState<any[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: number | null }>({ isOpen: false, id: null });
   const [newShop, setNewShop] = useState({ name: '', category: '', area_id: '' });
   const [newUser, setNewUser] = useState({ email: '', password: '' });
 
@@ -57,6 +59,18 @@ export default function AdminShops() {
     }
   };
 
+  const confirmDelete = async () => {
+    if (!deleteModal.id) return;
+    try {
+      await api.delete(`/admin/shops/${deleteModal.id}`);
+      fetchShops();
+      setDeleteModal({ isOpen: false, id: null });
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete shop');
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -97,12 +111,18 @@ export default function AdminShops() {
                       {shop.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
                     <button
                       onClick={() => toggleStatus(shop.id, shop.status)}
                       className={`${shop.status === 'active' ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'}`}
                     >
                       {shop.status === 'active' ? 'Deactivate' : 'Activate'}
+                    </button>
+                    <button
+                      onClick={() => setDeleteModal({ isOpen: true, id: shop.id })}
+                      className="text-red-600 hover:text-red-900 inline-flex items-center"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" /> Delete
                     </button>
                   </td>
                 </tr>
@@ -111,6 +131,14 @@ export default function AdminShops() {
           </table>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Shop"
+        message="Are you sure you want to delete this shop? This will also delete all associated users, products, and galleries. This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteModal({ isOpen: false, id: null })}
+      />
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -131,6 +159,7 @@ export default function AdminShops() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                 <select required value={newShop.category} onChange={e => setNewShop({...newShop, category: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" disabled={!newShop.area_id}>
+
                   <option value="">Select Category</option>
                   {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                 </select>
